@@ -22,4 +22,22 @@ jobs:
       - name: Running the testcases
         run: |
           pytest tests.py
+  push_image_to_ecr:
+    runs-on: ubuntu-latest
+    env: 
+      AWS_REGION: ap-south-1
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+    steps: 
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::865742897250:role/equalExpertAssignment
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
+
       
